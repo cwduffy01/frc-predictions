@@ -10,4 +10,17 @@ def get_matrix(event_key):  # returns a coordinate matrix that displays who play
     for team in teams:
         team_keys.append(team["key"])
 
-    matrix = []
+    coefficients = []
+    for i in range(len(team_keys)):
+        row = []
+        for j in range(len(team_keys)):
+            row.append(0)
+        coefficients.append(row)
+
+    for match in matches:
+        if match["comp_level"] == "qm":
+            for alliance in match["alliances"].values():
+                for i in alliance["team_keys"]:
+                    row = coefficients[team_keys.index(i)]
+                    for j in alliance["team_keys"]:
+                        row[team_keys.index(j)] += 1
