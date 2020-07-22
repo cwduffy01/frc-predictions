@@ -10,9 +10,13 @@ AUTH_HEADERS = {
 }
 
 
-def get_event_info(event_key):  # gets information about an event based on its key
+def get_event(event_key):  # gets information about an event based on its key
     return requests.get(f"{URL}/event/{event_key}", headers=AUTH_HEADERS).json()
 
 
 def get_matches(event_key):     # gets a list of information about matches at an event based on its key
     return requests.get(f"{URL}/event/{event_key}/matches", headers=AUTH_HEADERS).json()
+
+
+def get_teams(event_key):
+    return requests.get(f"{URL}/event/{event_key}/teams", headers=AUTH_HEADERS).json()
