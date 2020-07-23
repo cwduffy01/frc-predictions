@@ -5,8 +5,8 @@ def get_matrix(event_key):  # returns a coordinate matrix that displays who play
 
     matches = get_matches(event_key)
 
-    rankings = get_rankings(event_key)["rankings"]
     team_keys = []
+    rankings = get_rankings(event_key)["rankings"]
     for ranking in rankings:
         team_keys.append(ranking["team_key"][3:])   # adds all team numbers to the team_keys list
     team_keys.sort(key=int)                         # sorts team numbers numerically
@@ -15,11 +15,13 @@ def get_matrix(event_key):  # returns a coordinate matrix that displays who play
         team_keys.append(element)                   # appends it back into list
 
     coefficients = []
+    solutions = []
     for i in range(len(team_keys)):     # creates blank matrix
         row = []
         for j in range(len(team_keys)):
             row.append(0)
         coefficients.append(row)
+        solutions.append({})
 
     for match in matches:                                   # fill in matrix
         if match["comp_level"] == "qm":                     # ignore bracket matches
@@ -30,5 +32,6 @@ def get_matrix(event_key):  # returns a coordinate matrix that displays who play
                         row[team_keys.index(j)] += 1
 
     return coefficients
+
 
 get_matrix("2020gadal")
