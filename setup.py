@@ -1,4 +1,6 @@
 from tba_pull import get_matches, get_rankings
+import itertools
+import collections
 
 
 def get_matrix(event_key):  # returns a coordinate matrix that displays who played which teams
@@ -25,8 +27,19 @@ def get_matrix(event_key):  # returns a coordinate matrix that displays who play
 
     for match in matches:                                   # fill in matrix
         if match["comp_level"] == "qm":                     # ignore bracket matches
-            for alliance in match["alliances"].values():
+            for color in match["alliances"]:
+                alliance = match["alliances"][color]
                 for i in alliance["team_keys"]:
+
+                    values = get_values(event_key, match, color)
+                    Cdict = collections.defaultdict(int)
+
+                    # combines values of each match with corresponding row in solutions
+                    for key, val in itertools.chain(values.items(), solutions[team_keys.index(i)].items()):
+                        Cdict[key] += val
+
+                    solutions[team_keys.index(i)] = dict(Cdict)
+
                     row = coefficients[team_keys.index(i)]
                     for j in alliance["team_keys"]:
                         row[team_keys.index(j)] += 1
@@ -34,4 +47,6 @@ def get_matrix(event_key):  # returns a coordinate matrix that displays who play
     return coefficients
 
 
-get_matrix("2020gadal")
+def get_values(event_key, match, color):
+    values = {"scores": match["alliances"][color]["score"]}
+    return values
