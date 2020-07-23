@@ -44,9 +44,7 @@ def get_matrix(event_key):  # returns a coordinate matrix that displays who play
                     for j in alliance["team_keys"]:
                         row[team_keys.index(j)] += 1
 
-    [print(solution) for solution in solutions]
-
-    return coefficients
+    return coefficients, solutions, team_keys
 
 
 def get_values(event_key, match, color):
@@ -70,6 +68,3 @@ def get_values(event_key, match, color):
         values["foulPoints"] = breakdown["foulPoints"]
 
     return values
-
-
-get_matrix("2020gadal")
