@@ -44,9 +44,32 @@ def get_matrix(event_key):  # returns a coordinate matrix that displays who play
                     for j in alliance["team_keys"]:
                         row[team_keys.index(j)] += 1
 
+    [print(solution) for solution in solutions]
+
     return coefficients
 
 
 def get_values(event_key, match, color):
+
     values = {"scores": match["alliances"][color]["score"]}
+    breakdown = match["score_breakdown"][color]
+    year = event_key[:4]
+
+    if year == "2020":
+        values["autoCellsBottom"] = breakdown["autoCellsBottom"]
+        values["autoCellsOuter"] = breakdown["autoCellsOuter"]
+        values["autoCellsInner"] = breakdown["autoCellsInner"]
+        values["autoCellsTotal"] = values["autoCellsBottom"] + values["autoCellsOuter"] + values["autoCellsInner"]
+        values["teleopCellsBottom"] = breakdown["teleopCellsBottom"]
+        values["teleopCellsOuter"] = breakdown["teleopCellsOuter"]
+        values["teleopCellsInner"] = breakdown["teleopCellsInner"]
+        values["teleopCellsTotal"] = values["teleopCellsBottom"] + values["teleopCellsOuter"] + \
+                                     values["teleopCellsInner"]
+        values["cellsTotal"] = values["teleopCellsTotal"] + values["autoCellsTotal"]
+        values["percentLevel"] = int(breakdown["endgameRungIsLevel"] == "IsLevel")
+        values["foulPoints"] = breakdown["foulPoints"]
+
     return values
+
+
+get_matrix("2020gadal")
