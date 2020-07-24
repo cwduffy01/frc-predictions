@@ -31,13 +31,11 @@ def get_matrix(event_key):  # returns a coordinate matrix that displays who play
                 alliance = match["alliances"][color]
                 for i in alliance["team_keys"]:
 
-                    values = get_values(event_key, match, color)
+                    values = get_values(event_key, match, color, i)
                     Cdict = collections.defaultdict(int)
-
                     # combines values of each match with corresponding row in solutions
                     for key, val in itertools.chain(values.items(), solutions[team_keys.index(i)].items()):
                         Cdict[key] += val
-
                     solutions[team_keys.index(i)] = dict(Cdict)
 
                     row = coefficients[team_keys.index(i)]
@@ -47,13 +45,17 @@ def get_matrix(event_key):  # returns a coordinate matrix that displays who play
     return coefficients, solutions, team_keys
 
 
-def get_values(event_key, match, color):
+def get_values(event_key, match, color, team):
 
-    values = {"scores": match["alliances"][color]["score"]}
+    values = {"score": match["alliances"][color]["score"]}
     breakdown = match["score_breakdown"][color]
     year = event_key[:4]
+    robot_index = match["alliances"][color]["team_keys"].index(team)
+
+    # CAST MEASURES THAT PERTAIN TO INDIVIDUAL ROBOTS TO FLOAT
 
     if year == "2020":
+        values["percentInitLine"] = float(breakdown[f"initLineRobot{robot_index+1}"] == "Exited")
         values["autoCellsBottom"] = breakdown["autoCellsBottom"]
         values["autoCellsOuter"] = breakdown["autoCellsOuter"]
         values["autoCellsInner"] = breakdown["autoCellsInner"]
@@ -64,6 +66,11 @@ def get_values(event_key, match, color):
         values["teleopCellsTotal"] = values["teleopCellsBottom"] + values["teleopCellsOuter"] + \
                                      values["teleopCellsInner"]
         values["cellsTotal"] = values["teleopCellsTotal"] + values["autoCellsTotal"]
+        values["percentStage1"] = int(breakdown["stage1Activated"])
+        values["percentStage2"] = int(breakdown["stage2Activated"])
+        values["percentStage3"] = int(breakdown["stage3Activated"])
+        values["percentPark"] = float(breakdown[f"endgameRobot{robot_index+1}"] == "Park")
+        values["percentHang"] = float(breakdown[f"endgameRobot{robot_index+1}"] == "Hang")
         values["percentLevel"] = int(breakdown["endgameRungIsLevel"] == "IsLevel")
         values["foulPoints"] = breakdown["foulPoints"]
 
