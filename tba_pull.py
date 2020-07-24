@@ -14,6 +14,16 @@ def get_event(event_key):  # gets information about an event based on its key
     return requests.get(f"{URL}/event/{event_key}", headers=AUTH_HEADERS).json()
 
 
+def get_events(team_key, year=None, keys=False):   # gets a list of events that a team has participated in
+    if keys:                # returns only team keys
+        if year is None:    # returns all events
+            return requests.get(f"{URL}/team/{team_key}/events/keys", headers=AUTH_HEADERS).json()
+        return requests.get(f"{URL}/team/{team_key}/events/{year}/keys", headers=AUTH_HEADERS).json()
+    if year is None:        # returns only team keys
+        return requests.get(f"{URL}/team/{team_key}/events", headers=AUTH_HEADERS).json()
+    return requests.get(f"{URL}/team/{team_key}/events/{year}", headers=AUTH_HEADERS).json()
+
+
 def get_matches(event_key):     # gets a list of information about matches at an event based on its key
     return requests.get(f"{URL}/event/{event_key}/matches", headers=AUTH_HEADERS).json()
 
