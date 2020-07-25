@@ -43,6 +43,3 @@ def get_team_predictions(team_key, *years, offseason=False):
 
     df = pd.concat(event_dfs)   # merge all DataFrames
     return df
-
-
-print(get_team_predictions("frc4910", 2019, 2018, offseason=True))
