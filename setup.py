@@ -9,12 +9,8 @@ def get_matrix(event_key):  # returns a coordinate matrix that displays who play
 
     team_keys = []
     rankings = get_rankings(event_key)["rankings"]
-    for ranking in rankings:
-        team_keys.append(ranking["team_key"][3:])   # adds all team numbers to the team_keys list
-    team_keys.sort(key=int)                         # sorts team numbers numerically
-    while not team_keys[0].startswith("frc"):
-        element = f"frc{team_keys.pop(0)}"          # adds the "frc" back into each number to make it a key
-        team_keys.append(element)                   # appends it back into list
+    team_keys = [ranking["team_key"] for ranking in rankings]   # adds all team keys to teams list
+    team_keys = sorted(team_keys, key=lambda i: int(i[3:]))     # sorts team keys numerically
 
     coefficients = []
     solutions = []
