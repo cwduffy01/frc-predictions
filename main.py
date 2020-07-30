@@ -1,8 +1,10 @@
+# EXTERNAL PACKAGES
 import pandas as pd
 import os
 
+# MODULES
 from predict import predict
-from tba_pull import get_events, get_rankings
+from tba_pull import get_events, get_rankings, get_teams
 
 
 def get_event_predictions(event_key):
@@ -31,6 +33,7 @@ def get_team_predictions(team_key, *years, offseason=False):
 
     years = list(years)     # convert tuple to list
     years.sort()
+    years = [str(year) for year in years]
 
     path = f"team_predictions/{team_key}"
     filename = f"{'_'.join(years)}{'_os' if offseason else ''}"
@@ -64,5 +67,34 @@ def get_team_predictions(team_key, *years, offseason=False):
         except FileNotFoundError:                  # if path doesn't exist
             os.makedirs(path)                      # create directory
             df.to_csv(f"{path}/{filename}.csv")    # create csv file
+
+    return df
+
+
+def get_future_event_predictions(future_event_key):     # returns best scores for each team at an upcoming event
+
+    team_keys = get_teams(future_event_key, keys=True)          # get team keys and sort
+    team_keys = sorted(team_keys, key=lambda i: int(i[3:]))
+    dfs = []
+
+    for team_key in team_keys:
+        events = get_events(team_key, year=future_event_key[:4])    # get list of events
+        events = sorted(events, key=lambda i: i["start_date"])      # sort by start date
+        event_keys = [event["key"] for event in events]             # get list of event keys
+        del event_keys[event_keys.index(future_event_key):]         # slice list to events before predicted event
+
+        event_dfs = []
+        for event_key in event_keys:
+            event_dfs.append(get_event_predictions(event_key).loc[[team_key]])  # get each event row for team
+        event_df = pd.concat(event_dfs)     # combine
+
+        min_df = event_df[["foulCount", "techFoulCount", "totalFoulCount"]].min().to_frame().transpose()    # min fouls
+        event_df = event_df.max().to_frame().transpose()    # get max scores over all events
+        event_df.update(min_df)                             # modify fouls columns for minimum fouls
+        event_df["teamKey"] = team_key
+        event_df.set_index("teamKey", inplace=True)         # change index to team key
+        dfs.append(event_df)
+
+    df = pd.concat(dfs)     # merge all dataframes
 
     return df
