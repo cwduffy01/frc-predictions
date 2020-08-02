@@ -23,4 +23,5 @@ def predict(event_key):
     df = pd.DataFrame(solutions)                        # return pandas DataFrame of predicted data
     df["teamKey"] = pd.Series(data[2])
     df.set_index("teamKey", inplace=True, drop=True)    # makes teamKeys the index
+
     return df

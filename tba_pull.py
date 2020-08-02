@@ -28,7 +28,9 @@ def get_matches(event_key):     # gets a list of information about matches at an
     return requests.get(f"{URL}/event/{event_key}/matches", headers=AUTH_HEADERS).json()
 
 
-def get_teams(event_key):
+def get_teams(event_key, keys=False):
+    if keys:
+        return requests.get(f"{URL}/event/{event_key}/teams/keys", headers=AUTH_HEADERS).json()
     return requests.get(f"{URL}/event/{event_key}/teams", headers=AUTH_HEADERS).json()
 
 

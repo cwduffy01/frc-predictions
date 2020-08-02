@@ -76,7 +76,7 @@ def get_team_predictions(team_key, *years, offseason=False, overwrite=False):
     return df
 
 
-def get_future_event_predictions(future_event_key, overwrite=False):    # returns best scores for each team at an upcoming event
+def get_team_list_predictions(future_event_key, overwrite=False):    # returns best scores for each team at an upcoming event
 
     if len(get_rankings(future_event_key)["rankings"]) != 0:    # if event has already occurred
         print("Event has already occurred")
@@ -128,5 +128,3 @@ def get_future_event_predictions(future_event_key, overwrite=False):    # return
             df.to_csv(f"{path}/{filename}.csv")  # create csv file
 
     return df
-
-get_future_event_predictions("2020gacar")
