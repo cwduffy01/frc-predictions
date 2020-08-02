@@ -51,9 +51,10 @@ def get_team_predictions(team_key, *years, offseason=False, overwrite=False):
 
         events = []
         for year in years:
-            events.extend(get_events(team_key, year))   # extend each year's list of events
+            events.extend(get_events(team_key, year))           # extend each year's list of events
         if len(years) == 0:
-            events = get_events(team_key, None)         # get all events if none specified
+            events = get_events(team_key, None)                 # get all events if none specified
+        events = sorted(events, key=lambda i: i["start_date"])  # sort events by start date
 
         event_dfs = []
         for event in events:
@@ -76,7 +77,7 @@ def get_team_predictions(team_key, *years, offseason=False, overwrite=False):
     return df
 
 
-def get_team_list_predictions(future_event_key, overwrite=False):    # returns best scores for each team at an upcoming event
+def get_future_event_predictions(future_event_key, overwrite=False):    # returns best scores for each team at an upcoming event
 
     if len(get_rankings(future_event_key)["rankings"]) != 0:    # if event has already occurred
         print("Event has already occurred")
